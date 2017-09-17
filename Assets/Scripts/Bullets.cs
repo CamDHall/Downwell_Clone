@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class Bullets : MonoBehaviour {
 
+    Rigidbody2D rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     private void Update()
     {
-        transform.Translate(Vector3.down * (Time.deltaTime * 0.5f));
+        rb.velocity = Vector2.down * 10;
     }
 
     private void OnCollisionEnter2D(Collision2D coll)

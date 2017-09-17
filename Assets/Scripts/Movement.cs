@@ -12,6 +12,9 @@ public class Movement : MonoBehaviour {
     public bool jumping = false;
     Rigidbody2D rb;
 
+    // Shooting
+    public bool shooting = false;
+
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
 
@@ -29,11 +32,10 @@ public class Movement : MonoBehaviour {
             rb.velocity = Vector2.down * movementSpeed;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightShift)) {
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightShift)) && !shooting) {
             if (colliding && Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space))
             {
                 jumping = true;
-                Debug.Log(colliding);
             }
         }
 

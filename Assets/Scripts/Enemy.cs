@@ -18,7 +18,6 @@ public class Enemy : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-        Debug.Log("HERE");
         Vector2 newDirection = new Vector2(-direction.x, 0);
         direction = newDirection;
     }
