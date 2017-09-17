@@ -6,10 +6,9 @@ public class Movement : MonoBehaviour {
 
     public float movementSpeed;
     public static Movement Instance;
-    public bool colliding = false;
+    public bool colliding = false, hitEnemy = false;
 
     public float jumpHeight;
-    float forceAmount = 5;
     public bool jumping = false;
     Rigidbody2D rb;
 
@@ -29,7 +28,6 @@ public class Movement : MonoBehaviour {
         {
             rb.velocity = Vector2.down * movementSpeed;
         }
-        Debug.Log(colliding);
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightShift)) {
             if (colliding && Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space))
@@ -42,7 +40,6 @@ public class Movement : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.RightShift) || Input.GetKeyUp(KeyCode.Space))
         {
             StartCoroutine("DelayShot");
-            forceAmount = jumpHeight;
         }
     }
 
@@ -60,24 +57,36 @@ public class Movement : MonoBehaviour {
 
         if(jumping)
         {
-            // Add upward force within a range
-            if (rb.velocity.y < 7)
+            // Different behavior for enemy and platform
+            if (hitEnemy)
+            {
+                rb.AddForce(Vector2.up * (3 * jumpHeight));
+                StartCoroutine("DelayShot");
+            }
+            else if (rb.velocity.y < 7)
+            {
                 rb.AddForce(Vector2.up * (8 + jumpHeight));
+            }
             else
+            {
                 jumping = false;
+            }
         }
-    }
-
-    public void Jump()
-    {
-        GetComponent<Rigidbody2D>().AddForce(transform.up * jumpHeight, ForceMode2D.Impulse);
-        StartCoroutine("DelayShot");
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
     {
-        if(coll.gameObject.tag != "Wall")
+        // Wall
+        if (coll.gameObject.tag == "Enemy")
+        {
+            jumping = true;
+            hitEnemy = true;
+            Destroy(coll.gameObject, 0.2f);
+        }
+        else if (coll.gameObject.tag != "Wall")
+        {
             colliding = true;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -89,5 +98,6 @@ public class Movement : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.25f);
         jumping = false;
+        hitEnemy = false;
     }
 }

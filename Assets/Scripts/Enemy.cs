@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+    Vector2 direction;
+
+    private void Start()
+    {
+        direction = new Vector2(1, 0);
+    }
+
+    void Update () {
+
+        transform.Translate(direction * Time.deltaTime);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        Debug.Log("HERE");
+        Vector2 newDirection = new Vector2(-direction.x, 0);
+        direction = newDirection;
+    }
 }
