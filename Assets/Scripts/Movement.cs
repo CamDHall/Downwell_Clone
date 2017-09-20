@@ -32,6 +32,7 @@ public class Movement : MonoBehaviour {
 	}
 
 	void Update () {
+        Debug.Log(colliding);
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightShift)) && !shooting) {
             if (colliding && (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space)))
             {
@@ -52,11 +53,23 @@ public class Movement : MonoBehaviour {
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(Vector3.left * (Time.deltaTime * movementSpeed));
+
+            // Change direction of sprite 
+            if (!GetComponent<SpriteRenderer>().flipX)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
         }
 
         if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             transform.Translate(Vector3.right * (Time.deltaTime * movementSpeed));
+
+            // Change direction of sprite
+            if(GetComponent<SpriteRenderer>().flipX)
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+            }
         }
 
         if (jumping)
@@ -80,7 +93,7 @@ public class Movement : MonoBehaviour {
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D coll)
+    private void OnCollisionStay2D(Collision2D coll)
     {
         // Wall
         if (coll.gameObject.tag == "Enemy")
