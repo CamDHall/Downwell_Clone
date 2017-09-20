@@ -7,16 +7,23 @@ public class Shooting : MonoBehaviour {
     public GameObject bulletPrefab;
     float fireTimer = 0;
     bool canShoot = false;
-    
-	
-	// Update is called once per frame
-	void Update () {
+    public int magCapacity;
+    public int magCount;
+
+
+    private void Start()
+    {
+        magCount = magCapacity;
+    }
+
+    // Update is called once per frame
+    void Update () {
         if((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space)) && !Movement.Instance.colliding && !Movement.Instance.jumping)
         {
             canShoot = true;
         } 
 
-        if(Movement.Instance.colliding)
+        if(Movement.Instance.colliding || magCount <= 0)
         {
             canShoot = false;
         }
@@ -34,8 +41,7 @@ public class Shooting : MonoBehaviour {
         {
             if (Time.time > fireTimer || fireTimer == 0)
             {
-                Debug.Log(-Movement.Instance.rb.velocity);
-                Movement.Instance.rb.AddForce(-Movement.Instance.rb.velocity);
+                Movement.Instance.rb.AddForce(-Movement.Instance.rb.velocity * 50);
                 Shoot();
             }
         }
@@ -48,5 +54,6 @@ public class Shooting : MonoBehaviour {
         Movement.Instance.shooting = true;
 
         fireTimer = Time.time + 0.15f;
+        magCount -= 1;
     }
 }

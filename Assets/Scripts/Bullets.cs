@@ -11,11 +11,6 @@ public class Bullets : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
-    {
-        rb.velocity = Vector2.down * 10;
-    }
-
     private void OnCollisionEnter2D(Collision2D coll)
     {
         if(coll.gameObject.tag != "Floor" && coll.gameObject.tag != "Player")

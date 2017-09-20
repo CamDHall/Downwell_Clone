@@ -95,6 +95,7 @@ public class Movement : MonoBehaviour {
         else if (coll.gameObject.tag != "Wall")
         {
             colliding = true;
+            GetComponent<Shooting>().magCount = GetComponent<Shooting>().magCapacity;
         }
     }
 
