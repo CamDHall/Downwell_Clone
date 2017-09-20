@@ -13,12 +13,13 @@ public class Bullets : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D coll)
     {
-        if(coll.gameObject.tag != "Floor" && coll.gameObject.tag != "Player")
+        Debug.Log(coll);
+        if(coll.gameObject.tag != "Floor" && coll.gameObject.tag != "Player" && coll.gameObject.tag != "Barrier")
         {
-            //Debug.Log(coll.gameObject.tag);
             Destroy(coll.gameObject);
         }
 
-        Destroy(this.gameObject);
+        if(coll.gameObject.tag != "Player")
+            Destroy(this.gameObject);
     }
 }

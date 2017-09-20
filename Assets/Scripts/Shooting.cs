@@ -23,7 +23,7 @@ public class Shooting : MonoBehaviour {
             canShoot = true;
         } 
 
-        if(Movement.Instance.colliding || magCount <= 0)
+        if(Movement.Instance.colliding || magCount <= 0 || Movement.Instance.jumping)
         {
             canShoot = false;
         }
@@ -49,7 +49,7 @@ public class Shooting : MonoBehaviour {
 
     void Shoot()
     {
-        Vector2 Pos = new Vector2(Movement.Instance.transform.position.x, Movement.Instance.transform.position.y - 1f);
+        Vector2 Pos = new Vector2(Movement.Instance.transform.position.x, Movement.Instance.transform.position.y - .5f);
         var bullet = Instantiate(bulletPrefab, Pos, Quaternion.identity);
         Movement.Instance.shooting = true;
 

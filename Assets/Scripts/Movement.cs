@@ -32,7 +32,6 @@ public class Movement : MonoBehaviour {
 	}
 
 	void Update () {
-        Debug.Log(colliding);
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightShift)) && !shooting) {
             if (colliding && (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space)))
             {
@@ -76,7 +75,7 @@ public class Movement : MonoBehaviour {
         {
             if (hitEnemy)
             {
-                rb.AddForce(new Vector2(0, jumpForce * 3.5f), ForceMode2D.Impulse);
+                rb.AddForce(new Vector2(0, jumpForce * 3f), ForceMode2D.Impulse);
                 hitEnemy = false;
                 jumping = false;
             }
