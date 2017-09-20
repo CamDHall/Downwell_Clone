@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour {
 
@@ -10,7 +11,10 @@ public class Movement : MonoBehaviour {
 
     public float jumpHeight;
     public bool jumping = false;
-    Rigidbody2D rb;
+
+    float jumpForce;
+
+    public Rigidbody2D rb;
 
     // Shooting
     public bool shooting = false;
@@ -23,17 +27,13 @@ public class Movement : MonoBehaviour {
         {
             movementSpeed = 1;
         }
+
+        jumpForce = jumpHeight;
 	}
 
 	void Update () {
-        // Constantly falling
-        if (!colliding && !jumping)
-        {
-            rb.velocity = Vector2.down * movementSpeed;
-        }
-
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightShift)) && !shooting) {
-            if (colliding && Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space))
+            if (colliding && (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space)))
             {
                 jumping = true;
             }
@@ -41,13 +41,15 @@ public class Movement : MonoBehaviour {
 
         if (Input.GetKeyUp(KeyCode.RightShift) || Input.GetKeyUp(KeyCode.Space))
         {
+            jumping = false;
+            jumpForce = jumpHeight;
             StartCoroutine("DelayShot");
         }
     }
 
     private void FixedUpdate()
     {
-        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(Vector3.left * (Time.deltaTime * movementSpeed));
         }
@@ -57,21 +59,23 @@ public class Movement : MonoBehaviour {
             transform.Translate(Vector3.right * (Time.deltaTime * movementSpeed));
         }
 
-        if(jumping)
+        if (jumping)
         {
-            // Different behavior for enemy and platform
             if (hitEnemy)
             {
-                rb.AddForce(Vector2.up * (3 * jumpHeight));
-                StartCoroutine("DelayShot");
-            }
-            else if (rb.velocity.y < 7)
-            {
-                rb.AddForce(Vector2.up * (8 + jumpHeight));
+                rb.AddForce(new Vector2(0, jumpForce * 3.5f), ForceMode2D.Impulse);
+                hitEnemy = false;
+                jumping = false;
             }
             else
             {
-                jumping = false;
+
+                rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+
+                // Reduce upward force
+                jumpForce -= 0.25f;
+                if (jumpForce < 0)
+                    jumpForce = 0;
             }
         }
     }
@@ -81,9 +85,12 @@ public class Movement : MonoBehaviour {
         // Wall
         if (coll.gameObject.tag == "Enemy")
         {
-            jumping = true;
             hitEnemy = true;
+            jumping = true;
             Destroy(coll.gameObject, 0.2f);
+        } else if(coll.gameObject.tag == "Floor")
+        {
+            SceneManager.LoadScene("main");
         }
         else if (coll.gameObject.tag != "Wall")
         {

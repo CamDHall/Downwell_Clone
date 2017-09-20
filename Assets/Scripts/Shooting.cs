@@ -11,12 +11,9 @@ public class Shooting : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(Movement.Instance.colliding);
-
-        if((Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.Space)) && !Movement.Instance.colliding)
+        if((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space)) && !Movement.Instance.colliding && !Movement.Instance.jumping)
         {
             canShoot = true;
-            
         } 
 
         if(Movement.Instance.colliding)
@@ -24,6 +21,10 @@ public class Shooting : MonoBehaviour {
             canShoot = false;
         }
 
+        // change can shoot if button isn't down
+        if(canShoot && (Input.GetKeyUp(KeyCode.RightShift) || Input.GetKeyUp(KeyCode.Space))) {
+            canShoot = false;
+        }
         Movement.Instance.shooting = canShoot;
 	}
 
@@ -31,12 +32,11 @@ public class Shooting : MonoBehaviour {
     {
         if(canShoot)
         {
-            if (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Space))
+            if (Time.time > fireTimer || fireTimer == 0)
             {
-                if (Time.time > fireTimer || fireTimer == 0)
-                {
-                    Shoot();
-                }
+                Debug.Log(-Movement.Instance.rb.velocity);
+                Movement.Instance.rb.AddForce(-Movement.Instance.rb.velocity);
+                Shoot();
             }
         }
     }
